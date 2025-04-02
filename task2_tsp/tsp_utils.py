@@ -2,7 +2,7 @@ import random
 from math import sqrt
 from itertools import permutations
 
-from gps_objects import Point
+from gps.gps_objects import Point
 from typing import List
 
 
@@ -46,8 +46,9 @@ def distance(point1: Point, point2: Point) -> float:
     return round(sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2), 2)
 
 
-def total_path_length(points: List[Point]) -> float:
-    return round(sum(distance(points[i], points[i + 1]) for i in range(len(points) - 1)), 2)
+def total_route_length(route: List[Point]) -> float:
+    """Returns total route length."""
+    return round(sum(distance(route[i], route[i + 1]) for i in range(len(route) - 1)), 2)
 
 
 def brute_force(start: Point, waypoints: List[Point], end: Point) -> List[Point]:
@@ -56,41 +57,9 @@ def brute_force(start: Point, waypoints: List[Point], end: Point) -> List[Point]
 
     for perm in permutations(waypoints):
         current_path = [start] + list(perm) + [end]
-        current_path_len = total_path_length(current_path)
+        current_path_len = total_route_length(current_path)
         if current_path_len < min_path_len:
             min_path_len = current_path_len
             best_path = current_path
 
     return best_path
-
-
-def nearest_neighbors(start: Point, waypoints: List[Point], end: Point) -> List[Point]:
-    current = start
-    remaining = waypoints[:]
-    ordered = [start]
-
-    while remaining:
-        next = min(remaining, key=lambda p: distance(current, p))
-        ordered.append(next)
-        remaining.remove(next)
-        current = next
-
-    ordered.append(end)
-    return ordered
-
-
-n = 1000
-#k = random.randint(0, n - 2)
-k = 500
-x_bound = 10000
-y_bound = 10000
-test_arr = generate_random_points(n, x_bound, y_bound)
-start, waypoints, end = generate_random_problem(test_arr, k)
-
-print(start, waypoints, end)
-best_path_bf = brute_force(start, waypoints, end)
-best_path_nn = nearest_neighbors(start, waypoints, end)
-
-print(best_path_bf, '\n', total_path_length(best_path_bf))
-print('\n')
-print(best_path_nn, '\n', total_path_length(best_path_nn))
