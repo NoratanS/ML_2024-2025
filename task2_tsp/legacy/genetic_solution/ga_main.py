@@ -1,5 +1,5 @@
 import random
-from task2_tsp.genetic_solution.ga_utils import create_individual, crossover, mutate
+from task2_tsp.legacy.genetic_solution.ga_utils import create_individual, crossover, mutate
 from task2_tsp.tsp_utils import total_route_length
 
 
